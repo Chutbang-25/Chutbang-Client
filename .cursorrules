@@ -1,0 +1,67 @@
+# Cursor Rules for chutbang
+
+## 프로젝트 개요
+Next.js 16 + React 19 + TypeScript + Tailwind CSS v4 기반의 웹 애플리케이션입니다.
+
+## 기술 스택
+- Framework: Next.js 16.0.3
+- React: 19.2.0
+- TypeScript: ^5
+- Styling: Tailwind CSS v4
+- Package Manager: bun
+- Storybook: 10.0.8
+
+## 코딩 컨벤션
+
+### TypeScript
+- 모든 파일은 TypeScript로 작성합니다
+- `any` 타입 사용을 최소화합니다
+- 인터페이스는 `interface` 키워드를 사용합니다
+- Props는 컴포넌트 파일 내부에 정의합니다
+
+### React 컴포넌트
+- 함수형 컴포넌트만 사용합니다
+- `React.forwardRef`를 사용하여 ref를 전달합니다
+- 컴포넌트는 PascalCase로 명명합니다
+- Props 인터페이스는 `ComponentNameProps` 형식으로 명명합니다
+
+### 스타일링
+- Tailwind CSS 클래스를 사용합니다
+- `cn()` 유틸리티 함수로 클래스명을 병합합니다
+- 인라인 스타일은 최소화합니다
+- 디자인 토큰은 `lib/design-tokens.ts`에서 관리합니다
+
+### 파일 구조
+```
+components/
+  common/
+    ui/          # 재사용 가능한 UI 컴포넌트
+  layout/       # 레이아웃 컴포넌트
+lib/            # 유틸리티 함수
+types/          # TypeScript 타입 정의
+stories/        # Storybook 스토리
+```
+
+### 네이밍
+- 컴포넌트: PascalCase (Button.tsx)
+- 함수/변수: camelCase (getUserData)
+- 상수: UPPER_SNAKE_CASE (API_BASE_URL)
+- 파일명: 컴포넌트는 PascalCase, 유틸은 camelCase
+
+### 디자인 시스템
+- 기본 폰트 사이즈: 14px
+- letter-spacing: -2%
+- 색상: Primary, Secondary, Grey 팔레트 사용
+- 모든 UI 컴포넌트는 Storybook 스토리를 작성합니다
+
+### 코드 품질
+- ESLint 규칙을 준수합니다
+- Prettier로 코드 포맷팅합니다
+- 불필요한 주석을 제거합니다
+- 의미 있는 변수명을 사용합니다
+
+### 주석
+- 복잡한 로직에만 주석을 작성합니다
+- JSDoc 주석은 공개 API에만 사용합니다
+- TODO 주석은 이슈로 추적 가능하도록 작성합니다
+

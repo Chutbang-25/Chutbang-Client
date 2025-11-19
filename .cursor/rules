@@ -1,0 +1,41 @@
+# Cursor IDE Rules for chutbang
+
+## 프로젝트 컨벤션
+
+### 코드 스타일
+- TypeScript를 사용합니다
+- 함수형 컴포넌트를 사용합니다
+- React 19와 Next.js 16을 사용합니다
+- Tailwind CSS v4를 사용합니다
+- 기본 폰트 사이즈는 14px입니다
+- letter-spacing은 -2%입니다
+
+### 파일 구조
+- 컴포넌트는 `components/` 디렉토리에 위치합니다
+- 공통 UI 컴포넌트는 `components/common/ui/`에 위치합니다
+- 유틸리티 함수는 `lib/` 디렉토리에 위치합니다
+- 타입 정의는 `types/` 디렉토리에 위치합니다
+
+### 네이밍 컨벤션
+- 컴포넌트 파일은 PascalCase를 사용합니다 (예: `Button.tsx`)
+- 유틸리티 함수는 camelCase를 사용합니다 (예: `cn.tsx`)
+- 상수는 UPPER_SNAKE_CASE를 사용합니다
+
+### 컴포넌트 작성 규칙
+- 모든 컴포넌트는 TypeScript로 작성합니다
+- Props는 interface로 정의합니다
+- `React.forwardRef`를 사용하여 ref를 전달할 수 있도록 합니다
+- `cn()` 유틸리티를 사용하여 클래스명을 병합합니다
+
+### 스타일링
+- Tailwind CSS 클래스를 사용합니다
+- 디자인 토큰은 `lib/design-tokens.ts`에서 관리합니다
+- 색상은 CSS 변수로 정의되어 있습니다 (Primary, Secondary, Grey)
+
+### Storybook
+- 모든 UI 컴포넌트는 Storybook 스토리를 작성합니다
+- 스토리는 `stories/` 디렉토리에 위치합니다
+
+### 패키지 관리
+- bun을 패키지 매니저로 사용합니다
+
