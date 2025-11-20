@@ -1,6 +1,6 @@
-import clsx from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import clsx from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export const cn = (...classes: string[]) => {
-  return twMerge(clsx(...classes))
-}
+    return twMerge(clsx(...classes));
+};

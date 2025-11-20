@@ -9,10 +9,13 @@ Chutbang 프로젝트입니다.
 Node.js 18.0.0 이상
 Bun 1.0.0 이상 (또는 npm/yarn)
 설치 및 실행
+
 # 의존성 설치
+
 bun install
 
 # 개발 서버 실행
+
 bun dev
 브라우저에서 http://localhost:3000을 열어 확인하세요.
 
@@ -29,28 +32,37 @@ AI: Gemini API
 브랜치 전략 - Git Flow 전략
 기술 스택 - 사용 기술 및 라이브러리
 📝 스크립트
+
 # 개발 서버 실행
+
 bun dev
 
 # 프로덕션 빌드
+
 bun build
 
 # 프로덕션 서버 실행
+
 bun start
 
 # ESLint 실행
+
 bun lint
 
 # ESLint 자동 수정
+
 bun lint:fix
 
 # Prettier 포맷팅
+
 bun format
 
 # Prettier 체크
+
 bun format:check
 
 # TypeScript 타입 체크
+
 bun type-check
 🔧 개발 환경 설정
 환경 변수 설정을 위해 .env.local 파일을 생성하세요:
