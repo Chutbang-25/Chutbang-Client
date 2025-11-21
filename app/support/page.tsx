@@ -1,4 +1,4 @@
-import { Header } from '@/components/common/Header';
+import { Header } from '@/components/layout/Header';
 import { LandingLayout } from '@/components/layout/LandingLayout';
 import Footer from '@/components/layout/Footer';
 

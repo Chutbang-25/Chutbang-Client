@@ -1,49 +1,44 @@
-import React from 'react';
-import { cn } from '@/lib/cn';
+import { InputHTMLAttributes, ComponentProps } from 'react';
 
-export interface InputProps
-    extends React.InputHTMLAttributes<HTMLInputElement> {
-    label?: string;
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+    label: string;
+    id: string;
+    name: string;
     error?: string;
-    helperText?: string;
+    register?: ComponentProps<'input'>;
+    required?: boolean;
+    placeholder?: string;
+    type?: string;
+    disabled?: boolean;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-    ({ label, error, helperText, className, id, ...props }, ref) => {
-        const inputId =
-            id || `input-${Math.random().toString(36).substr(2, 9)}`;
+const Input = ({
+    label,
+    id,
+    name,
+    error,
+    register,
+    required,
+    placeholder,
+    type,
+    disabled,
+}: InputProps) => {
+    return (
+        <>
+            <label htmlFor={id}>{label}</label>
+            <input
+                type={type}
+                id={id}
+                name={name}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                {...register}
+                className="p-2 border border-gray-300 rounded text-black transition-colors transition-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {error && <p className="text-red-500">{error}</p>}
+        </>
+    );
+};
 
-        return (
-            <div className="w-full">
-                {label && (
-                    <label
-                        htmlFor={inputId}
-                        className="block text-sm font-medium text-grey-700 mb-1"
-                    >
-                        {label}
-                    </label>
-                )}
-                <input
-                    ref={ref}
-                    id={inputId}
-                    className={cn(
-                        'w-full px-4 py-2 border rounded-lg transition-colors',
-                        'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',
-                        'disabled:bg-grey-100 disabled:cursor-not-allowed',
-                        error
-                            ? 'border-red-500 focus:ring-red-500'
-                            : 'border-grey-300 hover:border-grey-400',
-                        className
-                    )}
-                    {...props}
-                />
-                {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-                {helperText && !error && (
-                    <p className="mt-1 text-sm text-grey-500">{helperText}</p>
-                )}
-            </div>
-        );
-    }
-);
-
-Input.displayName = 'Input';
+export { Input };
