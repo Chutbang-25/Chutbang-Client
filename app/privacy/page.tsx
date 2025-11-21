@@ -1,4 +1,4 @@
-import { Header } from '@/components/common/Header';
+import { Header } from '@/components/layout/Header';
 import { LandingLayout } from '@/components/layout/LandingLayout';
 import Footer from '@/components/layout/Footer';
 
@@ -17,12 +17,12 @@ export default function PrivacyPage() {
                                 제1조 (개인정보의 처리 목적)
                             </h2>
                             <p>
-                                첫방(이하 "회사")은 다음의 목적을 위하여
-                                개인정보를 처리합니다. 처리하고 있는 개인정보는
-                                다음의 목적 이외의 용도로는 이용되지 않으며,
-                                이용 목적이 변경되는 경우에는 개인정보보호법
-                                제18조에 따라 별도의 동의를 받는 등 필요한
-                                조치를 이행할 예정입니다.
+                                첫방(이하 &quot;회사&quot;)은 다음의 목적을
+                                위하여 개인정보를 처리합니다. 처리하고 있는
+                                개인정보는 다음의 목적 이외의 용도로는 이용되지
+                                않으며, 이용 목적이 변경되는 경우에는
+                                개인정보보호법 제18조에 따라 별도의 동의를 받는
+                                등 필요한 조치를 이행할 예정입니다.
                             </p>
                             <div className="flex flex-col gap-2 ml-4">
                                 <p>

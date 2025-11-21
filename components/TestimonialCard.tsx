@@ -14,7 +14,7 @@ const TestimonialCard = ({
     testimonial,
 }: TestimonialCardProps) => {
     return (
-        <div className="w-[319px] h-[144px] px-6 py-6 rounded-lg bg-grey-50 border border-grey-100">
+        <div className="w-[319px] h-[144px] px-6 py-6 rounded-lg bg-white border border-grey-100">
             <div className="flex flex-col gap-2">
                 <div className="flex flex-col gap-2">
                     <div className="flex flex-row items-center gap-2">
@@ -47,4 +47,3 @@ const TestimonialCard = ({
 };
 
 export default TestimonialCard;
-

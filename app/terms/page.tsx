@@ -1,4 +1,4 @@
-import { Header } from '@/components/common/Header';
+import { Header } from '@/components/layout/Header';
 import { LandingLayout } from '@/components/layout/LandingLayout';
 import Footer from '@/components/layout/Footer';
 
@@ -17,10 +17,10 @@ export default function TermsPage() {
                                 제1조 (목적)
                             </h2>
                             <p>
-                                본 약관은 첫방(이하 "회사")이 제공하는 서비스의
-                                이용과 관련하여 회사와 이용자 간의 권리, 의무 및
-                                책임사항, 기타 필요한 사항을 규정함을 목적으로
-                                합니다.
+                                본 약관은 첫방(이하 &quot;회사&quot;)이 제공하는
+                                서비스의 이용과 관련하여 회사와 이용자 간의
+                                권리, 의무 및 책임사항, 기타 필요한 사항을
+                                규정함을 목적으로 합니다.
                             </p>
                         </section>
 
@@ -30,17 +30,19 @@ export default function TermsPage() {
                             </h2>
                             <div className="flex flex-col gap-2">
                                 <p>
-                                    1. "서비스"란 회사가 제공하는 부동산 정보
-                                    제공 플랫폼 및 관련 서비스를 의미합니다.
-                                </p>
-                                <p>
-                                    2. "이용자"란 본 약관에 동의하고 회사가
-                                    제공하는 서비스를 이용하는 자를 의미합니다.
-                                </p>
-                                <p>
-                                    3. "콘텐츠"란 서비스를 통해 제공되는 모든
-                                    정보, 데이터, 텍스트, 이미지 등을
+                                    1. &quot;서비스&quot;란 회사가 제공하는
+                                    부동산 정보 제공 플랫폼 및 관련 서비스를
                                     의미합니다.
+                                </p>
+                                <p>
+                                    2. &quot;이용자&quot;란 본 약관에 동의하고
+                                    회사가 제공하는 서비스를 이용하는 자를
+                                    의미합니다.
+                                </p>
+                                <p>
+                                    3. &quot;콘텐츠&quot;란 서비스를 통해
+                                    제공되는 모든 정보, 데이터, 텍스트, 이미지
+                                    등을 의미합니다.
                                 </p>
                             </div>
                         </section>
