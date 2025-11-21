@@ -1,5 +1,5 @@
-import { Input } from '@/components/common/ui/input';
-import { Button } from '@/components/common/ui/button';
+import { Input } from '@/components/common/ui/Input';
+import { Button } from '@/components/common/ui/Button';
 
 export default function Signup() {
     return (

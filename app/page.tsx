@@ -1,29 +1,27 @@
 import { Header } from '@/components/layout/Header';
-import landingImage from '@/public/assets/landing-image.svg';
 import Image from 'next/image';
+import Link from 'next/link';
 import { LandingLayout } from '@/components/layout/LandingLayout';
-import heroImageKitchen from '@/public/assets/content/hero-image1.svg';
-import heroImageLivingRoom from '@/public/assets/content/hero-image2.svg';
-import heroImageBathroom from '@/public/assets/content/hero-image3.svg';
-import heroImageOneRoom from '@/public/assets/content/hero-image4.svg';
-import heroImageOneRoomWithStair from '@/public/assets/content/hero-image5.svg';
 import whyImage1 from '@/public/assets/why/dollar.svg';
 import whyImage2 from '@/public/assets/why/spot.svg';
 import whyImage3 from '@/public/assets/why/home.svg';
 import whyImage4 from '@/public/assets/why/document.svg';
 import Card from '@/components/Card';
 import TestimonialCard from '@/components/TestimonialCard';
-import { Button } from '@/components/common/ui/button';
+import { Button } from '@/components/common/ui/Button';
 import Footer from '@/components/layout/Footer';
 
 export default function Home() {
     const heroImages = [
-        heroImageKitchen,
-        heroImageLivingRoom,
-        heroImageBathroom,
+        '/assets/content/hero-image1.jpg',
+        '/assets/content/hero-image2.jpg',
+        '/assets/content/hero-image3.jpg',
     ];
 
-    const heroImagesTwo = [heroImageOneRoom, heroImageOneRoomWithStair];
+    const heroImagesTwo = [
+        '/assets/content/hero-image4.jpg',
+        '/assets/content/hero-image5.jpg',
+    ];
 
     const whyImages = [whyImage1, whyImage2, whyImage3, whyImage4];
     const whyTitles = [
@@ -77,11 +75,11 @@ export default function Home() {
         <div>
             <Header />
             {/* Hero Section: Semantic Tag로 변경, 높이 설정 최적화 */}
-            <section className="relative w-full h-[400px] flex items-center justify-center overflow-hidden">
+            <section className="relative w-full h-[600px] md:h-[calc(100vh-80px)] max-h-[900px] flex items-center justify-center overflow-hidden">
                 {/* 배경 이미지: Next.js 'fill' 속성 사용하여 반응형 완벽 대응 */}
                 <div className="absolute inset-0 -z-10">
                     <Image
-                        src={landingImage}
+                        src="/assets/landing-image.jpg"
                         alt="사회초년생을 위한 첫 독립 가이드 배경" // alt 태그 구체화 (SEO)
                         fill
                         priority // LCP(로딩 속도) 최적화
@@ -121,68 +119,80 @@ export default function Home() {
             </section>
             {/* Content Section */}
             <LandingLayout>
-                <div className="flex flex-row items-center justify-center mb-[200px] w-full">
-                    <div className="flex flex-col gap-2">
-                        <h3 className="text-2xl font-semibold text-black">
-                            국가가 인증한 100% 안전 매물
+                <div className="flex flex-col md:flex-row items-center justify-center mb-16 md:mb-[200px] w-full px-4 md:px-0">
+                    <div className="flex flex-col gap-2 mb-8 md:mb-0 w-full md:w-full">
+                        <h3 className="text-2xl md:text-2xl font-semibold text-black">
+                            국가가 인증한 <br className="md:hidden" /> 100% 안전
+                            매물
                         </h3>
                         <p className="text-base text-grey-500">
-                            공공데이터포털에서 제공하는 매물로 <br />
+                            공공데이터포털에서 제공하는 매물로{' '}
+                            <br className="hidden md:block" />
                             인증받은 매물만 제공해요.
                         </p>
                     </div>
-                    <div className="flex flex-col gap-2 flex-1 justify-end items-end">
-                        <p className="text-xs text-grey-500">
+                    <div className="flex flex-col gap-2 w-full md:flex-1 justify-end items-end">
+                        <p className="text-xs text-grey-500 self-start md:self-end">
                             *예시 이미지입니다.
                         </p>
-                        <div className="flex flex-1 flex-row gap-6">
+                        <div className="grid grid-cols-2 md:flex md:flex-row gap-4 md:gap-6 w-full">
                             {heroImages.map((image, index) => (
-                                <Image
+                                <div
                                     key={index}
-                                    src={image}
-                                    alt={`hero image ${index}`}
-                                    width={313}
-                                    height={469}
-                                    className="w-full h-full object-cover"
-                                />
+                                    className="relative w-full aspect-[313/469] md:w-[313] md:h-[469]"
+                                >
+                                    <Image
+                                        src={image}
+                                        alt={`안심 전세 매물 예시 ${index + 1}`}
+                                        fill
+                                        className="object-cover rounded-lg"
+                                        sizes="(max-width: 768px) 50vw, 313px"
+                                    />
+                                </div>
                             ))}
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-row items-center justify-center mb-[200px] w-full">
-                    <div className="flex flex-col gap-2 flex-1 justify-start items-start">
-                        <p className="text-xs text-grey-500">
-                            *예시 이미지입니다.
-                        </p>
-                        <div className="flex flex-1 flex-row gap-6">
-                            {heroImagesTwo.map((image, index) => (
-                                <Image
-                                    key={index}
-                                    src={image}
-                                    alt={`hero image ${index}`}
-                                    width={313}
-                                    height={469}
-                                    className="w-full h-full object-cover"
-                                />
-                            ))}
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-2 justify-end items-end">
-                        <h3 className="text-2xl font-semibold text-right text-black">
-                            라이프스타일 기반 맞춤 주거 형태 추천
+                <div className="flex flex-col md:flex-row items-center justify-center mb-16 md:mb-[200px] w-full px-4 md:px-0">
+                    <div className="flex flex-col gap-2 mb-8 md:mb-0 w-full md:w-full md:order-2">
+                        <h3 className="text-2xl md:text-2xl font-semibold text-black md:text-right">
+                            라이프스타일 기반 <br className="md:hidden" /> 맞춤
+                            주거 형태 추천
                         </h3>
-                        <p className="text-base text-grey-500 text-right">
-                            간단한 질문으로 개인 상황 파악하고, <br />
+                        <p className="text-base text-grey-500 md:text-right">
+                            간단한 질문으로 개인 상황 파악하고,{' '}
+                            <br className="hidden md:block" />
                             소득, 저축, 직장 위치, 라이프스타일 분석해요.
                         </p>
                     </div>
+                    <div className="flex flex-col gap-2 w-full md:flex-1 justify-start items-start md:order-1">
+                        <p className="text-xs text-grey-500">
+                            *예시 이미지입니다.
+                        </p>
+                        <div className="grid grid-cols-2 md:flex md:flex-row gap-4 md:gap-6 w-full">
+                            {heroImagesTwo.map((image, index) => (
+                                <div
+                                    key={index}
+                                    className="relative w-full aspect-[430/332] md:w-[430px] md:h-[332px]"
+                                >
+                                    <Image
+                                        src={image}
+                                        alt={`맞춤 주거 형태 예시 ${index + 1}`}
+                                        fill
+                                        className="object-cover rounded-lg"
+                                        sizes="(max-width: 768px) 50vw, 430px"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
                 {/* Why Section */}
-                <h3 className="text-3xl font-semibold text-center text-black">
+                <h3 className="text-2xl md:text-3xl font-semibold text-center text-black px-4">
                     왜 <span className="text-primary-500">첫방</span>을 선택해야
                     할까요?
                 </h3>
-                <div className="flex flex-row gap-8 w-full mt-12 justify-center mb-[200px]">
+                <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full mt-8 md:mt-12 justify-center mb-16 md:mb-[200px] px-4">
                     {whyImages.map((image, index) => (
                         <Card
                             key={index}
@@ -196,13 +206,13 @@ export default function Home() {
             </LandingLayout>
             {/* Testimonials Section */}
             <div className="w-full bg-[#FAFAFA] py-16">
-                <div className="flex flex-col items-center gap-12 max-w-[1440px] mx-auto px-16">
+                <div className="flex flex-col items-center gap-12 max-w-[1440px] mx-auto px-4 md:px-16">
                     <h3 className="text-3xl font-semibold text-black text-center">
                         이미 많은 분들이{' '}
                         <span className="text-primary-500">첫방</span>으로
                         독립했어요
                     </h3>
-                    <div className="flex flex-row gap-8 justify-center">
+                    <div className="flex flex-col md:flex-row gap-6 md:gap-8 justify-center w-full">
                         {testimonials.map((testimonial, index) => (
                             <TestimonialCard
                                 key={index}
@@ -225,9 +235,11 @@ export default function Home() {
                     <p className="text-sm font-regular text-grey-500 dark:text-grey-300 text-center mb-6">
                         3분이면 당신에게 딱 맞는 집을 찾을 수 있어요
                     </p>
-                    <button className="w-[190px] h-[64px] bg-primary-500 text-grey-50 text-xl font-bold rounded-lg hover:cursor-pointer hover:scale-105 transition-all duration-300">
-                        무료로 시작하기
-                    </button>
+                    <Link href="/search" className="w-full md:w-auto px-4">
+                        <button className="w-full md:w-[190px] h-[64px] bg-primary-500 text-white text-xl font-bold rounded-lg hover:scale-105 transition-all duration-300 shadow-xl">
+                            무료로 시작하기
+                        </button>
+                    </Link>
                 </div>
             </div>
             {/* Footer */}
