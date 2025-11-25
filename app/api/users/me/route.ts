@@ -35,9 +35,10 @@ const profileSchema = z.object({
         .optional(),
 });
 
+// --------------------------- GET ---------------------------
 export async function GET(req: NextRequest) {
-    const { user, supabase, res } = await requireUser(req);
-    if (!user) return res!;
+    const { user, supabase, response } = await requireUser(req);
+    if (!user) return response!;
 
     const { data, error } = await supabase
         .from('user_profiles')
@@ -56,34 +57,37 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: true, data });
 }
 
+// --------------------------- PUT ---------------------------
 export async function PUT(req: NextRequest) {
-    const { user, supabase, res } = await requireUser(req);
-    if (!user) return res!;
+    const { user, supabase, response } = await requireUser(req);
+    if (!user) return response!;
 
     const body = await req.json();
     const parsed = profileSchema.parse(body);
 
-    const { error } = await supabase.from('user_profiles').upsert(
-        {
-            user_id: user.id,
-            age: parsed.age,
-            income: parsed.income,
-            savings: parsed.savings,
-            work_address: parsed.workLocation?.address,
-            work_lat: parsed.workLocation?.lat,
-            work_lng: parsed.workLocation?.lng,
-            commute_max_minutes: parsed.commutePreference?.maxMinutes,
-            commute_transport: parsed.commutePreference?.transport,
-            household_type: parsed.livingStyle?.householdType,
-            has_pet: parsed.livingStyle?.hasPet,
-            priority_safety: parsed.priorities?.safety,
-            priority_commute: parsed.priorities?.commute,
-            priority_price: parsed.priorities?.price,
-            priority_comfort: parsed.priorities?.comfort,
-            updated_at: new Date().toISOString(),
-        },
-        { onConflict: 'user_id' }
-    );
+    // 🔧 flatten 객체 -> DB column 형태 변환
+    const payload = {
+        user_id: user.id,
+        age: parsed.age ?? null,
+        income: parsed.income,
+        savings: parsed.savings,
+        work_address: parsed.workLocation?.address ?? null,
+        work_lat: parsed.workLocation?.lat ?? null,
+        work_lng: parsed.workLocation?.lng ?? null,
+        commute_max_minutes: parsed.commutePreference?.maxMinutes ?? null,
+        commute_transport: parsed.commutePreference?.transport ?? null,
+        household_type: parsed.livingStyle?.householdType ?? null,
+        has_pet: parsed.livingStyle?.hasPet ?? null,
+        priority_safety: parsed.priorities?.safety ?? null,
+        priority_commute: parsed.priorities?.commute ?? null,
+        priority_price: parsed.priorities?.price ?? null,
+        priority_comfort: parsed.priorities?.comfort ?? null,
+        updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+        .from('user_profiles')
+        .upsert(payload, { onConflict: 'user_id' });
 
     if (error) {
         console.error(error);
