@@ -75,7 +75,7 @@ export default function Home() {
         <div>
             <Header />
             {/* Hero Section: Semantic Tag로 변경, 높이 설정 최적화 */}
-            <section className="relative w-full h-[600px] md:h-[calc(100vh-80px)] max-h-[900px] flex items-center justify-center overflow-hidden">
+            <section className="relative w-full h-[600px] md:h-[calc(100vh-80px)] max-h-[400px] flex items-center justify-center overflow-hidden">
                 {/* 배경 이미지: Next.js 'fill' 속성 사용하여 반응형 완벽 대응 */}
                 <div className="absolute inset-0 -z-10">
                     <Image
@@ -83,8 +83,10 @@ export default function Home() {
                         alt="사회초년생을 위한 첫 독립 가이드 배경" // alt 태그 구체화 (SEO)
                         fill
                         priority // LCP(로딩 속도) 최적화
-                        className="object-cover brightness-50" // 이미지 살짝 어둡게 처리해서 글자 가독성 확보
+                        className="object-cover"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/20" />{' '}
+                    {/* 이미지 어둡게 처리 */}
                 </div>
 
                 {/* 텍스트 컨텐츠: z-index로 위로 올림 */}
@@ -102,15 +104,17 @@ export default function Home() {
 
                     <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
                         {/* 버튼 크기 및 터치 영역 모바일 최적화 */}
-                        <Button
-                            variant="primary"
-                            className="w-full md:w-auto min-w-[160px] h-12 text-lg rounded-full shadow-lg hover:scale-105 transition-transform"
-                        >
-                            내 맞춤 집 찾기
-                        </Button>
+                        <Link href="/search" className="w-full md:w-auto">
+                            <Button
+                                variant="primary"
+                                className="w-full md:w-auto min-w-[160px] h-12 text-lg rounded-full shadow-lg cursor-pointer"
+                            >
+                                내 맞춤 집 찾기
+                            </Button>
+                        </Link>
                         <Button
                             variant="outline" // ghost보다 outline이 배경 위에서 더 잘 보임
-                            className="w-full md:w-auto min-w-[160px] h-12 text-lg rounded-full border-white text-white hover:cursor-pointer"
+                            className="w-full md:w-auto min-w-[160px] h-12 text-lg rounded-full border-white text-white cursor-pointer"
                         >
                             더 알아보기
                         </Button>
@@ -236,7 +240,7 @@ export default function Home() {
                         3분이면 당신에게 딱 맞는 집을 찾을 수 있어요
                     </p>
                     <Link href="/search" className="w-full md:w-auto px-4">
-                        <button className="w-full md:w-[190px] h-[64px] bg-primary-500 text-white text-xl font-bold rounded-lg hover:scale-105 transition-all duration-300 shadow-xl">
+                        <button className="w-full md:w-[190px] h-[64px] bg-primary-500 text-white text-xl font-bold rounded-lg cursor-pointer">
                             무료로 시작하기
                         </button>
                     </Link>
