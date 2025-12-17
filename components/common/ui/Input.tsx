@@ -10,6 +10,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     placeholder?: string;
     type?: string;
     disabled?: boolean;
+    wfull?: boolean;
 }
 
 const Input = ({
@@ -22,10 +23,20 @@ const Input = ({
     placeholder,
     type,
     disabled,
+    wfull,
+    className,
+    value,
+    onChange,
+    ...rest
 }: InputProps) => {
     return (
         <>
-            <label htmlFor={id}>{label}</label>
+            <label
+                htmlFor={id}
+                className="block text-sm font-medium text-gray-700"
+            >
+                {label}
+            </label>
             <input
                 type={type}
                 id={id}
@@ -33,8 +44,16 @@ const Input = ({
                 placeholder={placeholder}
                 required={required}
                 disabled={disabled}
+                value={value}
+                onChange={onChange}
                 {...register}
-                className="p-2 border border-gray-300 rounded text-black transition-colors transition-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                {...rest}
+                className={
+                    className ||
+                    (wfull
+                        ? 'w-full p-2 border border-gray-300 rounded text-black transition-colors transition-200 focus:outline-none focus:ring-2 focus:ring-primary-500'
+                        : 'p-2 border border-gray-300 rounded text-black transition-colors transition-200 focus:outline-none focus:ring-2 focus:ring-primary-500')
+                }
             />
             {error && <p className="text-red-500">{error}</p>}
         </>

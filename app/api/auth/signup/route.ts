@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabaseServer';
 
 const signupSchema = z.object({
-    id: z.string().email(), // 여기서 이메일로 가정
+    id: z.string().min(1),
     nickname: z.string().min(1),
     password: z.string().min(6),
 });

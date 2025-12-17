@@ -18,37 +18,35 @@ export interface PublicHousing {
     application_start: string; // ISO string
     application_end: string; // ISO string
     official_link: string;
+    lat?: number;
+    lng?: number;
 }
 
-// ---------- Mock Data (임시)
-const MOCK_PUBLIC_HOUSING: PublicHousing[] = [
-    {
-        id: 'ph_01',
-        type: '행복주택',
-        location: '서울 관악구',
-        income_limit: 3500000,
-        age_limit: 39,
-        application_start: '2025-02-01',
-        application_end: '2025-02-25',
-        official_link: 'https://apply.lh.or.kr/',
-    },
-    {
-        id: 'ph_02',
-        type: '역세권 청년주택',
-        location: '서울 동작구',
-        income_limit: 4200000,
-        age_limit: null,
-        application_start: '2025-03-01',
-        application_end: '2025-03-18',
-        official_link: 'https://www.i-sh.co.kr',
-    },
-];
-
 // ---------- Main Function ----------
-export function matchPublicHousing(userProfile: UserProfile) {
+export async function fetchPublicHousing(params?: {
+    city?: string;
+    district?: string;
+    open?: boolean;
+}): Promise<PublicHousing[]> {
+    const searchParams = new URLSearchParams();
+    if (params?.city) searchParams.append('city', params.city);
+    if (params?.district) searchParams.append('district', params.district);
+    if (params?.open) searchParams.append('open', 'true');
+
+    const res = await fetch(`/api/public-housing?${searchParams.toString()}`);
+    if (!res.ok) {
+        throw new Error('Failed to fetch public housing data');
+    }
+    const json = await res.json();
+    return json.data;
+}
+
+// Legacy function support (can be removed later or adapted)
+export async function matchPublicHousing(userProfile: UserProfile) {
+    const housings = await fetchPublicHousing({ open: true });
     const today = new Date();
 
-    return MOCK_PUBLIC_HOUSING.filter((h) => {
+    return housings.filter((h) => {
         return (
             userProfile.income <= h.income_limit &&
             (!h.age_limit || (userProfile.age ?? 999) <= h.age_limit) &&

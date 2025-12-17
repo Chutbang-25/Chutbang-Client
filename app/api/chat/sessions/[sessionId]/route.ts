@@ -11,21 +11,26 @@ export async function GET(
     const { sessionId } = await params;
 
     const { data, error } = await supabase
-        .from('housing_sessions')
+        .from('chat_sessions')
         .select('*')
         .eq('session_id', sessionId)
         .eq('user_id', user.id)
         .single();
 
-    if (!data || error) {
+    if (error || !data) {
         return NextResponse.json(
-            { success: false, error: 'NOT_FOUND' },
+            { success: false, error: 'SESSION_NOT_FOUND' },
             { status: 404 }
         );
     }
 
     return NextResponse.json({
         success: true,
-        data,
+        data: {
+            sessionId: data.session_id,
+            messages: data.messages,
+            createdAt: data.created_at,
+            updatedAt: data.updated_at,
+        },
     });
 }

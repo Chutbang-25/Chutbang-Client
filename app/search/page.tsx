@@ -2,11 +2,11 @@
 
 import { Map, MapMarker, CustomOverlayMap } from 'react-kakao-maps-sdk';
 import useKakaoLoader from '@/hooks/use-kakao-loader';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchSideBar from '@/components/search/SearchSidebar/SearchSideBar';
 import calculateTime from '@/services/CalculateTime';
 import { House } from '@/types/house';
-import { generateRandomHouses } from '@/utils/generateMockHouses';
+import { fetchPublicHousing } from '@/app/services/publicHousing.service';
 
 interface KakaoPlace {
     place_name: string;
@@ -24,6 +24,29 @@ export default function Search() {
     const [houses, setHouses] = useState<House[]>([]);
     const [selectedPlace, setSelectedPlace] = useState<KakaoPlace | null>(null);
 
+    // Initial load of public housing data
+    useEffect(() => {
+        const loadInitialData = async () => {
+            try {
+                const housingData = await fetchPublicHousing({ open: true });
+                // Transform API data to House type if needed, or use as is if compatible
+                // For now, mapping minimal fields. You might need to adjust House type or API response.
+                const mappedHouses: House[] = housingData.map((h) => ({
+                    id: parseInt(h.id.replace('ph_', '')) || Math.random(), // Temporary ID handling
+                    name: h.type + ' ' + h.location,
+                    x: h.lng || 127.02761, // Fallback if no coord
+                    y: h.lat || 37.498095, // Fallback if no coord
+                    time: 0, // Initial time
+                    price: h.income_limit.toString(), // Using income limit as proxy for price
+                }));
+                setHouses(mappedHouses);
+            } catch (error) {
+                console.error('Failed to load housing data', error);
+            }
+        };
+        loadInitialData();
+    }, []);
+
     const searchPlace = () => {
         if (!window.kakao || !keyword)
             return alert('카카오맵이 로드되지 않았거나 검색어가 없습니다.');
@@ -38,12 +61,8 @@ export default function Search() {
                 setCenter({ lat: startY, lng: startX });
                 setSelectedPlace(target as unknown as KakaoPlace);
 
-                const randomHouses = generateRandomHouses(startY, startX);
-                const results = await calculateTime(
-                    startX,
-                    startY,
-                    randomHouses
-                );
+                // Recalculate times for existing houses based on new start point
+                const results = await calculateTime(startX, startY, houses);
                 setHouses(results);
             } else {
                 alert('검색 결과가 없습니다.');
@@ -91,11 +110,11 @@ export default function Search() {
                                 position={{ lat: house.y, lng: house.x }}
                                 yAnchor={1.4}
                             >
-                                <div className="bg-white p-2 rounded-lg shadow-xl border border-blue-100 flex flex-col items-center animate-bounce-slow">
-                                    <span className="text-xs text-gray-500">
+                                <div className="bg-white p-2 rounded-lg shadow-xl border border-primary-100 flex flex-col items-center animate-bounce-slow">
+                                    <span className="text-xs text-grey-500">
                                         {house.name}
                                     </span>
-                                    <span className="text-lg font-bold text-blue-600">
+                                    <span className="text-lg font-bold text-primary-600">
                                         {house.time === 999
                                             ? '경로없음'
                                             : `${house.time}분 🚌`}

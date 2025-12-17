@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabaseServer';
 
 const loginSchema = z.object({
-    id: z.string().email(),
-    password: z.string(),
+    id: z.string().min(1),
+    password: z.string().min(1),
 });
 
 export async function POST(req: NextRequest) {

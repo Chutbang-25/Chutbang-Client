@@ -2,39 +2,63 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabaseServer';
 
 export async function GET(req: NextRequest) {
-    const supabase = createAdminClient();
+    try {
+        if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    error: 'MISSING_ENV_VAR',
+                    details: 'SUPABASE_SERVICE_ROLE_KEY is missing',
+                },
+                { status: 500 }
+            );
+        }
 
-    const searchParams = req.nextUrl.searchParams;
-    const city = searchParams.get('city');
-    const district = searchParams.get('district');
-    const onlyOpen = searchParams.get('open') === 'true';
+        const supabase = createAdminClient();
 
-    let query = supabase.from('public_housing').select('*');
+        const searchParams = req.nextUrl.searchParams;
+        const city = searchParams.get('city');
+        const district = searchParams.get('district');
+        const onlyOpen = searchParams.get('open') === 'true';
 
-    if (city) query = query.eq('city', city);
-    if (district) query = query.eq('district', district);
+        let query = supabase.from('public_housing').select('*');
 
-    if (onlyOpen) {
-        const today = new Date().toISOString().split('T')[0];
-        query = query
-            .lte('application_start', today)
-            .gte('application_end', today);
-    }
+        if (city) query = query.eq('city', city);
+        if (district) query = query.eq('district', district);
 
-    const { data, error } = await query.order('application_start', {
-        ascending: true,
-    });
+        if (onlyOpen) {
+            const today = new Date().toISOString().split('T')[0];
+            query = query
+                .lte('application_start', today)
+                .gte('application_end', today);
+        }
 
-    if (error) {
+        const { data, error } = await query.order('application_start', {
+            ascending: true,
+        });
+
+        if (error) {
+            console.error('Supabase error:', error);
+            return NextResponse.json(
+                { success: false, error: 'DB_ERROR', details: error },
+                { status: 500 }
+            );
+        }
+
+        return NextResponse.json({
+            success: true,
+            count: data.length,
+            data,
+        });
+    } catch (e) {
+        console.error('Unexpected error:', e);
         return NextResponse.json(
-            { success: false, error: 'DB_ERROR', details: error },
+            {
+                success: false,
+                error: 'INTERNAL_SERVER_ERROR',
+                details: String(e),
+            },
             { status: 500 }
         );
     }
-
-    return NextResponse.json({
-        success: true,
-        count: data.length,
-        data,
-    });
 }

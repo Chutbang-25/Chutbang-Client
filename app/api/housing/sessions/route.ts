@@ -5,13 +5,17 @@ export async function GET(req: NextRequest) {
     const { user, supabase, response } = await requireUser(req);
     if (!user) return response!;
 
-    const { data, error } = await supabase
+    const searchParams = req.nextUrl.searchParams;
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const offset = (page - 1) * limit;
+
+    const { data, error, count } = await supabase
         .from('housing_sessions')
-        .select(
-            'session_id, created_at, summary:result->summary, recommendation:result->recommendation'
-        )
+        .select('*', { count: 'exact' })
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
 
     if (error) {
         return NextResponse.json(
@@ -22,7 +26,10 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
         success: true,
-        count: data.length,
+        count: count ?? 0,
+        page,
+        limit,
+        totalPages: Math.ceil((count ?? 0) / limit),
         data,
     });
 }

@@ -19,7 +19,7 @@ const SearchSideBar = ({
     selectedPlace,
 }: SearchSideBarProps) => {
     return (
-        <div className="w-full h-full bg-white flex flex-col border-r border-[#808080]">
+        <div className="w-full h-full bg-white flex flex-col border-r border-grey-200">
             <div className="p-4 h-[72px] flex items-center">
                 <SearchInput
                     value={keyword}
