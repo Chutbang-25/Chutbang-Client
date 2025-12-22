@@ -59,11 +59,17 @@ export async function POST(req: NextRequest) {
         input.workLocation.lng
     );
 
-    const publicHousing = matchPublicHousing({
-        income: input.income,
-        age: input.age,
-        workLocation: input.workLocation,
-    });
+    let publicHousing = [];
+    try {
+        publicHousing = await matchPublicHousing({
+            income: input.income,
+            age: input.age,
+            workLocation: input.workLocation,
+        });
+    } catch (error) {
+        console.error('[Housing Plan] 공공임대 매칭 실패:', error);
+        // 에러가 발생해도 계속 진행 (빈 배열 사용)
+    }
 
     // (4) Build result response
     const result = {
@@ -87,6 +93,7 @@ export async function POST(req: NextRequest) {
     let sessionId = null;
 
     if (user && input.saveSession) {
+        console.log('[Housing Plan] 세션 저장 시도 - user_id:', user.id);
         const { data, error } = await supabase
             .from('housing_sessions')
             .insert({
@@ -97,7 +104,14 @@ export async function POST(req: NextRequest) {
             .select('session_id')
             .single();
 
-        if (!error) sessionId = data.session_id;
+        if (error) {
+            console.error('[Housing Plan] 세션 저장 실패:', error);
+        } else {
+            sessionId = data.session_id;
+            console.log('[Housing Plan] 세션 저장 성공 - session_id:', sessionId);
+        }
+    } else {
+        console.log('[Housing Plan] 세션 저장 건너뜀 - user:', !!user, 'saveSession:', input.saveSession);
     }
 
     return NextResponse.json({

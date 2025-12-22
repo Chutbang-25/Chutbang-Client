@@ -344,14 +344,14 @@ export default function HousingPlanPage() {
                                             <div className="flex justify-between">
                                                 <span>최대 전세금</span>
                                                 <span className="font-bold">
-                                                    {result.budget.maxJeonse.toLocaleString()}{' '}
+                                                    {result.budget?.maxJeonse?.toLocaleString() || '0'}{' '}
                                                     만원
                                                 </span>
                                             </div>
                                             <div className="flex justify-between">
                                                 <span>추천 월세</span>
                                                 <span className="font-bold">
-                                                    {result.budget.recommendedWolse.toLocaleString()}{' '}
+                                                    {result.budget?.recommendedWolse?.toLocaleString() || '0'}{' '}
                                                     만원
                                                 </span>
                                             </div>

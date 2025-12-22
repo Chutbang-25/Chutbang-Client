@@ -27,6 +27,9 @@ export async function POST(request: Request) {
         const url = 'https://apis.openapi.sk.com/transit/routes';
 
         try {
+            console.log(`[TMAP] 요청 시작 - 출발: (${startX}, ${startY}), 도착: (${house.x}, ${house.y})`);
+            console.log(`[TMAP] API Key 존재 여부:`, !!TMAP_API_KEY);
+
             const res = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -45,16 +48,21 @@ export async function POST(request: Request) {
                 }),
             });
 
+            console.log(`[TMAP] 응답 상태:`, res.status);
+
             if (!res.ok) {
-                console.error(`TMAP API 호출 실패 - 집: (${house.x}, ${house.y}), 상태: ${res.status}`);
+                const errorText = await res.text();
+                console.error(`[TMAP] API 호출 실패 - 상태: ${res.status}, 에러:`, errorText);
                 return { ...house, time: 999 };
             }
 
             const data = await res.json();
+            console.log(`[TMAP] 응답 데이터:`, JSON.stringify(data).substring(0, 200));
 
             // TMAP 응답에서 경로 정보 추출
             if (!data.metaData || !data.metaData.plan || !data.metaData.plan.itineraries || data.metaData.plan.itineraries.length === 0) {
-                console.log(`경로 없음 - 집: (${house.x}, ${house.y})`);
+                console.log(`[TMAP] 경로 없음 - 집: (${house.x}, ${house.y})`);
+                console.log(`[TMAP] 응답 구조:`, JSON.stringify(data, null, 2));
                 return { ...house, time: 999 };
             }
 
@@ -62,10 +70,10 @@ export async function POST(request: Request) {
             const totalTime = data.metaData.plan.itineraries[0].totalTime;
             const minTime = Math.round(totalTime / 60); // 초 → 분 변환
 
-            console.log(`통근시간 계산 완료 - 집: (${house.x}, ${house.y}), 시간: ${minTime}분`);
+            console.log(`[TMAP] 통근시간 계산 완료 - 집: (${house.x}, ${house.y}), 시간: ${minTime}분`);
             return { ...house, time: minTime };
         } catch (error) {
-            console.error(`API 호출 실패 - 집: (${house.x}, ${house.y})`, error);
+            console.error(`[TMAP] API 호출 실패 - 집: (${house.x}, ${house.y})`, error);
             return { ...house, time: 999 };
         }
     };
