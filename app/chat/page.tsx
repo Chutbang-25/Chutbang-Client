@@ -17,18 +17,49 @@ export default function ChatPage() {
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showHistory, setShowHistory] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // 인사말 추가
-        setMessages([
-            {
-                role: 'assistant',
-                content:
-                    '안녕하세요! 주거 전문 상담사입니다. 궁금하신 점이 있으시면 편하게 물어보세요.',
-            },
-        ]);
+        // URL에서 sessionId 확인
+        const params = new URLSearchParams(window.location.search);
+        const urlSessionId = params.get('sessionId');
+
+        if (urlSessionId) {
+            loadSession(urlSessionId);
+        } else {
+            // 인사말 추가
+            setMessages([
+                {
+                    role: 'assistant',
+                    content:
+                        '안녕하세요! 주거 전문 상담사입니다. 궁금하신 점이 있으시면 편하게 물어보세요.',
+                },
+            ]);
+        }
     }, []);
+
+    const loadSession = async (id: string) => {
+        try {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                router.push('/login');
+                return;
+            }
+
+            const res = await fetch(`/api/chat/sessions/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            if (res.ok) {
+                const result = await res.json();
+                setSessionId(result.data.sessionId);
+                setMessages(result.data.messages || []);
+            }
+        } catch (e) {
+            console.error('Failed to load session', e);
+        }
+    };
 
     useEffect(() => {
         scrollToBottom();
@@ -105,12 +136,37 @@ export default function ChatPage() {
                 <div className="max-w-4xl w-full mx-auto flex-1 flex flex-col">
                     {/* 헤더 */}
                     <div className="bg-white rounded-t-lg shadow-sm p-6 border-b border-grey-200">
-                        <h1 className="text-2xl font-bold text-black mb-1">
-                            주거 상담 챗봇
-                        </h1>
-                        <p className="text-grey-500 text-sm">
-                            AI 상담사가 주거 관련 질문에 답변해드립니다
-                        </p>
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h1 className="text-2xl font-bold text-black mb-1">
+                                    주거 상담 챗봇
+                                </h1>
+                                <p className="text-grey-500 text-sm">
+                                    AI 상담사가 주거 관련 질문에 답변해드립니다
+                                </p>
+                            </div>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    onClick={() =>
+                                        router.push('/chat/history')
+                                    }
+                                >
+                                    이력 보기
+                                </Button>
+                                {sessionId && (
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                            router.push('/chat');
+                                            window.location.reload();
+                                        }}
+                                    >
+                                        새 채팅
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     {/* 메시지 영역 */}
