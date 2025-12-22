@@ -193,7 +193,9 @@ export default function ProfilePage() {
                                         onChange={(e) =>
                                             setFormData({
                                                 ...formData,
-                                                age: parseInt(e.target.value),
+                                                age: e.target.value
+                                                    ? parseInt(e.target.value)
+                                                    : undefined,
                                             })
                                         }
                                         placeholder="25"
@@ -205,13 +207,12 @@ export default function ProfilePage() {
                                         name="income"
                                         type="number"
                                         required
-                                        value={formData.income}
+                                        value={formData.income || ''}
                                         onChange={(e) =>
                                             setFormData({
                                                 ...formData,
-                                                income: parseInt(
-                                                    e.target.value
-                                                ),
+                                                income:
+                                                    parseInt(e.target.value) || 0,
                                             })
                                         }
                                         placeholder="3000"
@@ -223,13 +224,12 @@ export default function ProfilePage() {
                                         name="savings"
                                         type="number"
                                         required
-                                        value={formData.savings}
+                                        value={formData.savings || ''}
                                         onChange={(e) =>
                                             setFormData({
                                                 ...formData,
-                                                savings: parseInt(
-                                                    e.target.value
-                                                ),
+                                                savings:
+                                                    parseInt(e.target.value) || 0,
                                             })
                                         }
                                         placeholder="1000"
@@ -253,8 +253,9 @@ export default function ProfilePage() {
                                         setFormData({
                                             ...formData,
                                             workLocation: {
-                                                ...formData.workLocation!,
                                                 address: e.target.value,
+                                                lat: formData.workLocation?.lat,
+                                                lng: formData.workLocation?.lng,
                                             },
                                         })
                                     }
@@ -276,9 +277,9 @@ export default function ProfilePage() {
                                                 ...formData,
                                                 commutePreference: {
                                                     ...formData.commutePreference!,
-                                                    maxMinutes: parseInt(
-                                                        e.target.value
-                                                    ),
+                                                    maxMinutes:
+                                                        parseInt(e.target.value) ||
+                                                        30,
                                                 },
                                             })
                                         }
