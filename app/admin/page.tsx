@@ -42,21 +42,32 @@ export default function AdminPage() {
     });
 
     useEffect(() => {
-        checkAdminAuth();
-        fetchHousings();
+        checkAdminAuth().then(() => fetchHousings());
     }, []);
 
-    const checkAdminAuth = () => {
+    const checkAdminAuth = async () => {
         const token = localStorage.getItem('accessToken');
         if (!token) {
             router.push('/login');
+            return;
         }
-        // TODO: 실제로는 사용자 정보를 가져와서 admin 여부 확인 필요
+        // 관리자 전용 엔드포인트 호출로 권한 검증
+        const res = await fetch('/api/admin/public-housing', {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.status === 401) {
+            router.push('/login');
+        } else if (res.status === 403) {
+            router.push('/');
+        }
     };
 
     const fetchHousings = async () => {
         try {
-            const res = await fetch('/api/public-housing');
+            const token = localStorage.getItem('accessToken');
+            const res = await fetch('/api/admin/public-housing', {
+                headers: token ? { Authorization: `Bearer ${token}` } : {},
+            });
             if (res.ok) {
                 const result = await res.json();
                 setHousings(result.data || []);

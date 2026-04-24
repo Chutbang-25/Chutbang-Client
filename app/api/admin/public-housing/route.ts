@@ -2,6 +2,33 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireAdmin } from '@/lib/adminAuth';
 
+// 관리자 전용 목록 조회 (권한 확인용 겸용)
+export async function GET(req: NextRequest) {
+    try {
+        const { isAdmin, supabase, response } = await requireAdmin(req);
+        if (!isAdmin || !supabase) return response!;
+
+        const { data, error } = await supabase
+            .from('public_housing')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            return NextResponse.json(
+                { success: false, error: 'DB_ERROR', details: error },
+                { status: 500 }
+            );
+        }
+
+        return NextResponse.json({ success: true, data: data ?? [] });
+    } catch (e: any) {
+        return NextResponse.json(
+            { success: false, error: 'INTERNAL_ERROR', details: e.message },
+            { status: 500 }
+        );
+    }
+}
+
 const publicHousingSchema = z.object({
     name: z.string(),
     type: z.string(),
