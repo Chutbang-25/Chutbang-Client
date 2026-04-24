@@ -2,9 +2,32 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Script from 'next/script';
 import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/common/ui/Button';
 import { Input } from '@/components/common/ui/Input';
+import useKakaoLoader from '@/hooks/use-kakao-loader';
+
+interface HousingPlanResult {
+    summary: { title: string; description: string };
+    recommendation: { type: string; reason: string };
+    budget: {
+        canJeonse: boolean;
+        maxJeonse?: number;
+        recommendedWolse?: number;
+        monthlyBudget: number;
+        depositBudget: number;
+    };
+    recommendedAreas: Array<{
+        areaId: string;
+        name: string;
+        reason: string;
+        avgDeposit: number;
+        avgRent: number;
+        estimatedCommuteMinutes: number;
+    }>;
+    publicHousingMatches: Array<{ id: string; name: string; type: string }>;
+}
 
 interface HousingPlanInput {
     income: number;
@@ -36,17 +59,18 @@ export default function HousingPlanPage() {
     const router = useRouter();
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState<any>(null); // TODO: Define result type
+    const [result, setResult] = useState<HousingPlanResult | null>(null);
     const [error, setError] = useState('');
+    useKakaoLoader();
 
     const [formData, setFormData] = useState<HousingPlanInput>({
         income: 3000,
         savings: 1000,
         age: 25,
         workLocation: {
-            address: '서울시 강남구 테헤란로', // TODO: Implement address search
-            lat: 37.5665,
-            lng: 126.978,
+            address: '',
+            lat: 0,
+            lng: 0,
         },
         commutePreference: {
             maxMinutes: 40,
@@ -67,6 +91,28 @@ export default function HousingPlanPage() {
 
     const handleNext = () => setStep(step + 1);
     const handlePrev = () => setStep(step - 1);
+
+    const handleAddressSearch = () => {
+        if (typeof window === 'undefined') return;
+        new (window as any).daum.Postcode({
+            oncomplete: (data: any) => {
+                const address = data.roadAddress || data.jibunAddress;
+                const geocoder = new (window as any).kakao.maps.services.Geocoder();
+                geocoder.addressSearch(address, (result: any[], status: string) => {
+                    if (status === (window as any).kakao.maps.services.Status.OK) {
+                        setFormData((prev) => ({
+                            ...prev,
+                            workLocation: {
+                                address,
+                                lat: parseFloat(result[0].y),
+                                lng: parseFloat(result[0].x),
+                            },
+                        }));
+                    }
+                });
+            },
+        }).open();
+    };
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -98,6 +144,7 @@ export default function HousingPlanPage() {
 
     return (
         <div className="min-h-screen bg-grey-50">
+            <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js" strategy="lazyOnload" />
             <Header />
             <div className="pt-24 pb-16 px-4">
                 <div className="max-w-3xl mx-auto">
@@ -168,22 +215,32 @@ export default function HousingPlanPage() {
                                 <h1 className="text-2xl font-bold text-black mb-2">
                                     🏢 직장에 대한 정보
                                 </h1>
-                                <Input
-                                    label="직장 주소"
-                                    id="workAddress"
-                                    name="workAddress"
-                                    value={formData.workLocation.address}
-                                    onChange={(e) =>
-                                        setFormData({
-                                            ...formData,
-                                            workLocation: {
-                                                ...formData.workLocation,
-                                                address: e.target.value,
-                                            },
-                                        })
-                                    }
-                                    wfull
-                                />
+                                <div>
+                                    <label className="block text-sm font-medium text-grey-700 mb-1">
+                                        직장 주소
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            readOnly
+                                            value={formData.workLocation.address}
+                                            placeholder="주소 검색 버튼을 눌러주세요"
+                                            className="flex-1 px-4 py-2 border border-grey-200 rounded-lg bg-grey-50 text-grey-800 focus:outline-none"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={handleAddressSearch}
+                                        >
+                                            주소 검색
+                                        </Button>
+                                    </div>
+                                    {formData.workLocation.lat !== 0 && (
+                                        <p className="text-xs text-grey-400 mt-1">
+                                            좌표: {formData.workLocation.lat.toFixed(4)}, {formData.workLocation.lng.toFixed(4)}
+                                        </p>
+                                    )}
+                                </div>
                                 <Input
                                     label="최대 통근 시간 (분)"
                                     id="maxCommute"
