@@ -5,10 +5,15 @@ import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/common/ui/Button';
 import { Input } from '@/components/common/ui/Input';
 
+interface BudgetResult {
+    maxJeonse: number;
+    maxMonthlyRent: number;
+}
+
 export default function BudgetTooolPage() {
     const [income, setIncome] = useState<number>(3000);
     const [savings, setSavings] = useState<number>(1000);
-    const [result, setResult] = useState<any>(null); // TODO: Define budget result type
+    const [result, setResult] = useState<BudgetResult | null>(null);
     const [loading, setLoading] = useState(false);
 
     const handleCalculate = async () => {
@@ -23,15 +28,6 @@ export default function BudgetTooolPage() {
             if (res.ok) {
                 const resultData = await res.json();
                 if (resultData.success) {
-                    setResult({
-                        maxJeonse: resultData.data.depositBudget,
-                        maxMonthlyRent: resultData.data.monthlyBudget, // Using monthlyBudget as rent limit based on API logic
-                        loanAmount: (resultData.data.monthlyBudget / 0.3) * 3.5, // Reverse calc or just display what API sends
-                        // The API returns { canJeonse, monthlyBudget, depositBudget, monthlyRentOptions }
-                        // The UI expects maxJeonse, maxMonthlyRent.
-                    });
-                    // Let's adjust UI to match API response better or map it.
-                    // API: depositBudget (max jeonse budget), monthlyBudget (max monthly rent)
                     setResult({
                         maxJeonse: resultData.data.depositBudget,
                         maxMonthlyRent: resultData.data.monthlyBudget,

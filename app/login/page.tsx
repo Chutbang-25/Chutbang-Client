@@ -30,8 +30,6 @@ export default function Login() {
         try {
             const res = await authService.login(formData);
             if (res.success && res.data) {
-                // TODO: Store token securely (e.g., cookie or context) if not handled by Supabase client automatically
-                // For now, we assume the API might set a cookie or we just redirect
                 router.push('/');
             } else {
                 setError(res.error || 'Login failed');
